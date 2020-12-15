@@ -3,7 +3,7 @@ package domain
 import (
 	"fmt"
 	"net/http"
-	"work/02_mvc/utils"
+	"work/mvc/utils"
 )
 
 var (

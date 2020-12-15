@@ -1,8 +1,8 @@
 package services
 
 import (
-	"work/02_mvc/domain"
-	"work/02_mvc/utils"
+	"work/mvc/domain"
+	"work/mvc/utils"
 )
 
 func GetUser(userID int64) (*domain.User, *utils.ApplicationError) {

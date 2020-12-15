@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"work/02_mvc/services"
-	"work/02_mvc/utils"
+	"work/mvc/services"
+	"work/mvc/utils"
 )
 
 func GetUser(res http.ResponseWriter, req *http.Request) {

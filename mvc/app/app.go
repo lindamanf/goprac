@@ -2,7 +2,7 @@ package app
 
 import (
 	"net/http"
-	"work/02_mvc/controllers"
+	"work/mvc/controllers"
 )
 
 func StartApp() {
