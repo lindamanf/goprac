@@ -15,7 +15,8 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"golang.go"
+			"golang.go",
+			"golang.go-nightly"
 		]
 	}
 }

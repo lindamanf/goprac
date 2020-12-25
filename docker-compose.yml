@@ -5,4 +5,3 @@ services:
     tty: true
     volumes:
       - .:/go/src/work
-
