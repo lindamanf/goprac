@@ -1,11 +1,13 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 	"work/src/api/config"
 	"work/src/api/domain/github"
 	"work/src/api/domain/repositories"
+	"work/src/api/log"
 	"work/src/api/providers/github_provider"
 	"work/src/api/utils/errors"
 )
@@ -13,7 +15,7 @@ import (
 type reposService struct{}
 
 type reposServiceInterface interface {
-	CreateRepo(request repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError)
+	CreateRepo(clientID string, request repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError)
 	CreateRepos(requests []repositories.CreateRepoRequest) (repositories.CreateReposResponse, errors.ApiError)
 }
 
@@ -25,7 +27,7 @@ func init() {
 	RepositoryService = &reposService{}
 }
 
-func (s *reposService) CreateRepo(input repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError) {
+func (s *reposService) CreateRepo(clientID string, input repositories.CreateRepoRequest) (*repositories.CreateRepoResponse, errors.ApiError) {
 	if err := input.Validate(); err != nil {
 		return nil, err
 	}
@@ -35,12 +37,13 @@ func (s *reposService) CreateRepo(input repositories.CreateRepoRequest) (*reposi
 		Description: input.Description,
 		Private:     false,
 	}
-
+	log.Info("about to send request to external api", fmt.Sprintf("clientID:%s", clientID), "status:pending")
 	response, err := github_provider.CreateRepo(config.GetGithubAccessToken(), request)
 	if err != nil {
+		log.Error("response obtained from external api", err, fmt.Sprintf("clientID:%s", clientID), "status:error")
 		return nil, errors.NewApiError(err.StatusCode, err.Message)
 	}
-
+	log.Info("response obtained from external api", fmt.Sprintf("clientID:%s", clientID), "status:success")
 	result := repositories.CreateRepoResponse{
 		ID:    response.ID,
 		Name:  response.Name,
@@ -73,7 +76,6 @@ func (s *reposService) CreateRepos(requests []repositories.CreateRepoRequest) (r
 			successCreations++
 		}
 	}
-
 	if successCreations == 0 {
 		result.StatusCode = result.Results[0].Error.Status()
 	} else if successCreations == len(requests) {
@@ -81,7 +83,6 @@ func (s *reposService) CreateRepos(requests []repositories.CreateRepoRequest) (r
 	} else {
 		result.StatusCode = http.StatusPartialContent
 	}
-
 	return result, nil
 }
 

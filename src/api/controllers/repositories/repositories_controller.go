@@ -17,7 +17,9 @@ func CreateRepo(c *gin.Context) {
 		return
 	}
 
-	result, err := services.RepositoryService.CreateRepo(request)
+	clientID := c.GetHeader("X-Client-Id")
+
+	result, err := services.RepositoryService.CreateRepo(clientID, request)
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
@@ -26,7 +28,7 @@ func CreateRepo(c *gin.Context) {
 }
 
 func CreateRepos(c *gin.Context) {
-	var request repositories.CreateRepoRequest
+	var request []repositories.CreateRepoRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		apiErr := errors.NewBadRequestError("invalid json body")
 		c.JSON(apiErr.Status(), apiErr)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func _main() {
 	c := make(chan string, 4)
 
 	// c <- "1"
