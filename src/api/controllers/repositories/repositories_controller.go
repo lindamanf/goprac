@@ -35,7 +35,9 @@ func CreateRepos(c *gin.Context) {
 		return
 	}
 
-	result, err := services.RepositoryService.CreateRepos(request)
+	clientID := c.GetHeader("X-Client-Id")
+
+	result, err := services.RepositoryService.CreateRepos(clientID, request)
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
