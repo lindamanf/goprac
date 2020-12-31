@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 func TestCreateRepoInvalidInputName(t *testing.T) {
 	request := repositories.CreateRepoRequest{}
 
-	result, err := RepositoryService.CreateRepo(request)
+	result, err := RepositoryService.CreateRepo("go-test", request)
 
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
@@ -42,7 +42,7 @@ func TestCreateRepoErrorFromGithub(t *testing.T) {
 	})
 	request := repositories.CreateRepoRequest{Name: "testing"}
 
-	result, err := RepositoryService.CreateRepo(request)
+	result, err := RepositoryService.CreateRepo("go-test", request)
 	assert.Nil(t, result)
 	assert.NotNil(t, err)
 	assert.EqualValues(t, http.StatusUnauthorized, err.Status())
@@ -61,7 +61,7 @@ func TestCreateRepoNotError(t *testing.T) {
 	})
 	request := repositories.CreateRepoRequest{Name: "testing"}
 
-	result, err := RepositoryService.CreateRepo(request)
+	result, err := RepositoryService.CreateRepo("go-test", request)
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
 	assert.EqualValues(t, 123, result.ID)
@@ -75,7 +75,7 @@ func TestCreateRepoConcurrentInvalidRequest(t *testing.T) {
 	output := make(chan repositories.CreateRepositoriesResult)
 
 	service := reposService{}
-	go service.createRepoConcurrent(request, output)
+	go service.createRepoConcurrent("go-test", request, output)
 
 	result := <-output
 	assert.NotNil(t, result)
@@ -101,7 +101,7 @@ func TestCreateRepoConcurrentErrorFromGithub(t *testing.T) {
 	output := make(chan repositories.CreateRepositoriesResult)
 
 	service := reposService{}
-	go service.createRepoConcurrent(request, output)
+	go service.createRepoConcurrent("go-test", request, output)
 
 	result := <-output
 	assert.NotNil(t, result)
@@ -127,7 +127,7 @@ func TestCreateRepoConcurrentNotError(t *testing.T) {
 	output := make(chan repositories.CreateRepositoriesResult)
 
 	service := reposService{}
-	go service.createRepoConcurrent(request, output)
+	go service.createRepoConcurrent("go-test", request, output)
 
 	result := <-output
 	assert.NotNil(t, result)
@@ -172,7 +172,7 @@ func TestCreateReposSingleRequest(t *testing.T) {
 		{Name: "   "},
 	}
 
-	result, err := RepositoryService.CreateRepos(requests)
+	result, err := RepositoryService.CreateRepos("go-test", requests)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -203,7 +203,7 @@ func TestCreateReposOneSuccessOneFail(t *testing.T) {
 		{Name: "testing"},
 	}
 
-	result, err := RepositoryService.CreateRepos(requests)
+	result, err := RepositoryService.CreateRepos("go-test", requests)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
@@ -239,7 +239,7 @@ func TestCreateReposAllSuccess(t *testing.T) {
 		{Name: "testing"},
 	}
 
-	result, err := RepositoryService.CreateRepos(requests)
+	result, err := RepositoryService.CreateRepos("go-test", requests)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, result)

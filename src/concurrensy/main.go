@@ -78,7 +78,7 @@ func handleResults(wg *sync.WaitGroup, input chan createRepoResult) {
 }
 
 func createRepo(buffer chan bool, output chan createRepoResult, request repositories.CreateRepoRequest) {
-	result, err := services.RepositoryService.CreateRepo(request)
+	result, err := services.RepositoryService.CreateRepo("test", request)
 
 	output <- createRepoResult{
 		Request: request,
